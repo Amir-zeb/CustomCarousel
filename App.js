@@ -8,8 +8,12 @@ import {
 } from 'react-native';
 import Carousel from './components/carousel';
 import { data } from './data';
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
+  React.useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView>
