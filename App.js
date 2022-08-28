@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ImagePickerIOS,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,7 +9,6 @@ import {
 import Carousel from './components/carousel';
 
 const App = () => {
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView>

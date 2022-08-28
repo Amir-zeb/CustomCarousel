@@ -1,74 +1,63 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, Animated } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as Animatable from 'react-native-animatable';
+import SlideItem from './slide-item';
+import Pagination from './pagination';
 
 export default function Carousel({ data }) {
     const [index, setIndex] = React.useState(0)
+    const [animateType, setAnimateType] = React.useState('fadeIn');
+
+    const slideLeft = () => {
+        if (index !== 0) {
+            setIndex(index - 1);
+            setAnimateType('fadeInLeft');
+        };
+    }
+
+    const slideRight = () => {
+        if ((data.length - 1) > index) {
+            setIndex(index + 1);
+            setAnimateType('fadeInRight');
+        };
+    }
+
+    const gotoSlide = (i) => {
+        setIndex(i);
+        if (i > index) {
+            setAnimateType('fadeInRight');
+        } else {
+            setAnimateType('fadeInLeft');
+        }
+    }
 
     return (
         <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
             <View style={{ position: 'relative', flex: 1 }}>
-                {data.map((v, i) => {
-                    return <SlideItem key={i} item={v} index={i} activeIndex={index} />
-                })}
                 <TouchableOpacity
-                    onPress={() => { index !== 0 ? setIndex(index - 1) : null }}
+                    onPress={slideLeft}
                     style={[styles.fab, styles.fabLeft]}
+                    activeOpacity={1}
                 >
                     <Icon name='chevron-left' />
                 </TouchableOpacity>
 
+                <SlideItem animateType={animateType} key={index} item={data[index]} />
+
                 <TouchableOpacity
                     style={[styles.fab, styles.fabRight]}
-                    onPress={() => { (data.length - 1) > index ? setIndex(index + 1) : null }}>
+                    activeOpacity={1}
+                    onPress={slideRight}>
                     <Icon name='chevron-right' />
                 </TouchableOpacity>
+                <Pagination gotoSlide={gotoSlide} length={data.length} active={index} />
             </View>
         </View>
     );
 }
 
-const SlideItem = ({ item, index, activeIndex }) => {
-
-    return (
-        <View
-            style={[styles.slide, activeIndex == index ? styles.activeSlide : styles.hideSlide]}
-        >
-            <View style={{ alignItems: "center", justifyContent: "center" }}>
-                <Image source={item.url} style={{ resizeMode: 'contain' }} />
-            </View>
-            <View style={{ marginTop: 20 }}>
-                <Icon name='quote-left' size={25} />
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Icon name='star' color='#F77E00' size={22} />
-                    <Icon name='star' color='#F77E00' size={22} />
-                    <Icon name='star' color='#F77E00' size={22} />
-                    <Icon name='star' color='#F77E00' size={22} />
-                    <Icon name='star' color='#F77E00' size={22} />
-                </View>
-                <Text style={{ fontSize: 15, marginTop: 16, color: "#333", lineHeight: 20, fontWeight: 'bold' }}>{item.text}</Text>
-                <Text style={{ fontSize: 16, marginTop: 16, color: '#000', fontWeight: 'bold' }}>{item.title}</Text>
-                <Text style={{ fontSize: 11, color: "#333" }}>{item.dis}</Text>
-            </View >
-        </View >
-    );
-}
 const styles = StyleSheet.create({
-    slide: {
-        width: '100%',
-        height: 'auto',
-        flex: 1,
-    },
-    activeSlide: {
-        transform: [{ scale: 1 }],
-        zIndex: 5
-    },
-    hideSlide: {
-        transform: [{ scale: 0 }],
-        position: 'absolute',
-        top: 0,
-        left: 0,
-    },
     fab: {
         alignItems: 'center',
         justifyContent: 'center',
